@@ -26,7 +26,7 @@ Pada tugas ini kami memilih **dua algoritma hybrid** dari jurnal ilmiah, mengimp
 1. **HBA-EO**: Honey Badger Algorithm + *Elite framework* (Zhang dkk., 2025).
 2. **Hybrid PSO-SA**: Particle Swarm Optimization + Simulated Annealing (Khaledian dkk., 2024).
 
-Seluruh penjelasan, simulator, dan hasil uji kami kemas dalam satu berkas web interaktif bergaya petualangan, **Scheduling Quest**, tempat maskot Madu si musang madu menjelajahi enam pulau langit (level).
+Seluruh penjelasan, simulator, dan hasil uji kami kemas dalam satu berkas web interaktif bergaya petualangan, **Scheduling Quest**, tempat maskot Madu si musang madu menjelajahi enam pulau langit (level). Aplikasi ini dilengkapi musik latar dan narasi suara Madu di setiap halaman.
 
 > **Catatan istilah.** Pada laporan ini, **EO** di dalam nama *HBA-EO* berarti ***Elite framework*** (kerangka elite hasil hybrid di paper MOHBA-I/II), **bukan** *Equilibrium Optimizer* seperti pada laporan Min-Min / HBA / EO sebelumnya.
 
@@ -208,9 +208,25 @@ Pada Arena, kolom **Metode A** dan **Metode B** dapat diganti dengan Round Robin
 
 ---
 
+## Musik dan Narasi Suara
+
+Setiap halaman level dinarasikan oleh Madu, ditemani musik latar.
+
+| Fitur | Keterangan |
+| :--- | :--- |
+| **Narasi Madu** | 19 klip suara (pembuka, peta, tiap halaman level, selesai balapan, dan naik level) dibuat dengan ElevenLabs v3 dan **sudah tertanam** di berkas HTML, jadi tidak perlu mengunduh apa pun. Mulut maskot ikut bergerak saat bicara. |
+| **Suara cadangan** | Jika sebuah baris tidak punya klip, narasi dibacakan oleh suara bahasa Indonesia bawaan peramban. |
+| **Musik latar** | Waltz bergaya fantasi yang disintesis langsung dengan Web Audio API (piano, flute, pad, lonceng). Ada tiga suasana: peta, tenang (Level I, II, III, dan VI), dan *battle* (Level IV dan V). Volume musik otomatis turun saat narator bicara. |
+| **Studio Suara** | Panel untuk mengganti klip narasi per baris, menyeret banyak file MP3 sekaligus (dicocokkan lewat nama file `01_title.mp3` dan seterusnya, atau berdasarkan urutan), memakai musik sendiri (`music.mp3`), mengatur volume, menyalin seluruh naskah, dan menghapus file tambahan. |
+| **Penyimpanan** | File yang ditambahkan lewat Studio Suara tersimpan di peramban (IndexedDB) pada perangkat tersebut saja. Jika presentasi memakai laptop lain, file perlu diseret ulang. |
+
+Audio baru mulai berbunyi setelah tombol **Mulai petualangan** diklik (aturan autoplay peramban).
+
+---
+
 ## Panduan Menjalankan
 
-Aplikasi bersifat satu berkas dan tidak membutuhkan server atau instalasi. Buka `scheduling-quest.html` di peramban modern. Dunia 3D memerlukan **WebGL2**; jika tidak didukung, semua level tetap dapat dibuka lewat tombol angka.
+Aplikasi bersifat satu berkas (sekitar 6,3 MB karena narasi suara tertanam) dan tidak membutuhkan server atau instalasi. Buka `scheduling-quest.html` di peramban modern. Dunia 3D memerlukan **WebGL2**; jika tidak didukung, semua level tetap dapat dibuka lewat tombol angka.
 
 | Kontrol | Fungsi |
 | :--- | :--- |
@@ -219,7 +235,9 @@ Aplikasi bersifat satu berkas dan tidak membutuhkan server atau instalasi. Buka 
 | **M** | Buka peta |
 | **Seret mouse** / **scroll** | Memutar / zoom pemandangan 3D |
 | **Klik label pulau** | Terbang ke level tersebut |
-| Tombol **Suara** | Menyalakan atau mematikan efek suara |
+| Tombol **Musik** / **Narator** | Menyalakan atau mematikan musik latar / narasi suara |
+| Tombol **Studio Suara** | Membuka panel untuk mengganti klip narasi dan musik |
+| **Esc** | Menutup Studio Suara |
 | Tombol **Layar penuh** | Mode layar penuh |
 
 Untuk mereproduksi angka bagian "Satu Kali Uji": buka Arena, biarkan semua nilai default (100 task, 10 VM, seed 42, populasi 40, iterasi 150, bobot 0,5 : 0,25 : 0,25, Metode A Min-Min, Metode B PSO), lalu jalankan balapan dan buka Boss Battle.
@@ -228,6 +246,7 @@ Untuk mereproduksi angka bagian "Satu Kali Uji": buka Arena, biarkan semua nilai
 
 ## Keterbatasan
 
+- Naskah narasi bersifat tetap. Ia tidak ikut berubah mengikuti hasil Arena, sedangkan kesimpulan di Level VI dan Boss Battle terisi otomatis dari angka uji. Kalimat penutup narasi (jadwal hybrid "jauh lebih bagus") lebih kuat daripada selisih yang kami ukur pada pengaturan default.
 - Dataset minggu 3 belum dimasukkan ke dalam perhitungan pada laporan ini (lihat catatan di bagian Spesifikasi Pengujian).
 - Simulator memodelkan **task independen** pada VM, sedangkan paper PSO-SA asli menangani workflow DAG di lingkungan fog-cloud dengan fitness berbasis pelanggaran *deadline* dan energi. Fitness kami adalah gabungan makespan, biaya, dan energi yang dinormalisasi terhadap Round Robin.
 - Implementasi HBA-EO mengikuti varian MOHBA-I (grid indexing) dan tidak mencakup varian dekomposisi MOHBA-II. Parameter paper asli (populasi 200, 300 iterasi, 15 kali run) juga lebih besar daripada default simulator (populasi 40, 150 iterasi).
